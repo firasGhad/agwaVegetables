@@ -7,9 +7,11 @@ const {width, height} = Dimensions.get('window');
 export default class VegetableItem extends Component{
 
     openVegetableDetails = () => {
-        console.log('VegetableDetails')
        NavigateTo(this.props.navigation, 'VegetableDetails', {plant} = this.props);
     }
+
+  
+ 
 
     render(){
 

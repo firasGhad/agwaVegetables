@@ -13,13 +13,17 @@ class WishListModal extends Component{
         super(props);
     }
 
+    state = {
+      choosenDevice : 1
+  }
+
     removeItem = (id) => {
-      this.props.delete(id);
+      this.props.delete(id,1);
       this.loadData();
     }
 
     emptyWishList = () => {
-      this.props.empty();
+      this.props.empty(1);
       this.loadData();
     }
 
@@ -29,9 +33,16 @@ class WishListModal extends Component{
       }, 500);
     }
 
-    render() {
 
-        let minHeight = (this.props.wishlist === null || this.props.wishlist.length === 0) ? 200 : 400;
+    render() {
+      let ordersForDevices = this.props.agwaFarmDevices, device={orders:[], id: 0};
+      console.log(ordersForDevices)
+      for(let i=0;i<ordersForDevices.length;i++){
+        if(ordersForDevices[i].id==this.state.choosenDevice){
+          device = ordersForDevices[i];
+        }
+    }
+        let minHeight = (device.orders === null || device.orders.length === 0) ? 200 : 400;
 
         return (
              <View style={styles.container}>
@@ -52,18 +63,18 @@ class WishListModal extends Component{
                         <ScrollView style={{ flex: 1 }}>
                             <View style={{ flex: 1 }}>
                                 {
-                                    (this.props.wishlist === null || this.props.wishlist.length === 0) ?
+                                    (device.orders === null || device.orders.length === 0) ?
                                     <Text style={styles.emptyWishlist}>Your wishlist is empty</Text>
                                     :
-                                    this.props.wishlist.map( (ele, ind) =>
+                                    device.orders.map((ele, ind) =>
                                         <View key={ind} style={styles.wishlistContainer}>
                                           <View style={{  }}>
 
-                                          <Image   source={{uri: `https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/images/vegetables/${ele.plant.imageId}@3x.jpg`}}
+                                          <Image   source={{uri: `https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/images/vegetables/${ele.imageId}@3x.jpg`}}
                                               style={{ width: 90, height: 100, resizeMode: 'contain' }}/>
                                           </View>
-                                          <Text style={styles.wishlistItem}>{ele.plant.name}</Text>
-                                          <TouchableOpacity onPress={ () => this.removeItem(ele.plant.id)}>
+                                          <Text style={styles.wishlistItem}>{ele.name}</Text>
+                                          <TouchableOpacity onPress={ () => this.removeItem(ele.id)}>
                                             <View>
                                               <FontAwesome name="trash-o" color="#fff" style={{ marginRight: 10 }} size={25}/>
                                             </View>
@@ -75,7 +86,7 @@ class WishListModal extends Component{
                        
                     </View>
 
-                    {(this.props.wishlist === null || this.props.wishlist.length === 0) ? null : 
+                    {(device.orders === null) ? null : 
                       <TouchableOpacity onPress={this.emptyWishList} activeOpacity={1}>
                         <View style={styles.emptyWishlistContainer}>
                           <Text style={styles.emptyWishlistText}>Empty your wishlist</Text>
@@ -159,16 +170,15 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
     return {
-      wishlist: state.wishlistReducer.wishlist
+      agwaFarmDevices: state.wishlistReducer.agwaFarmDevices
     }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-      delete: (key) => dispatch(remove(key)),
-      add: (item) => dispatch(add(item)),
-      empty: () => dispatch(empty())
+      delete: (key, deviceId) => dispatch(remove(key, deviceId)),
+      add: (item, deviceId) => dispatch(add(item, deviceId)),
+      empty: (deviceId) => dispatch(empty(deviceId))
   }
 }
-
 export default connect(mapStateToProps, mapDispatchToProps)(WishListModal);
