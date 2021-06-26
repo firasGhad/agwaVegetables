@@ -5,6 +5,8 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import {connect} from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
+import { Picker } from '@react-native-community/picker';
+
 import {add, remove, empty} from '../redux/actions/wishlist';
 
 class WishListModal extends Component{
@@ -13,17 +15,25 @@ class WishListModal extends Component{
         super(props);
     }
 
+    
     state = {
-      choosenDevice : 1
+      selectedDevice: 1,
+      agwaFarmDevices: []
   }
 
+    componentDidMount() {
+      let agwaFarmDevices =this.props.agwaFarmDevices.map((item) => item.id)
+      this.setState({agwaFarmDevices}); 
+  }
+
+
     removeItem = (id) => {
-      this.props.delete(id,1);
+      this.props.delete(id,this.state.selectedDevice);
       this.loadData();
     }
 
     emptyWishList = () => {
-      this.props.empty(1);
+      this.props.empty(this.state.selectedDevice);
       this.loadData();
     }
 
@@ -33,12 +43,15 @@ class WishListModal extends Component{
       }, 500);
     }
 
+    onDeviceValueChange(value) {
+      this.setState({ selectedDevice: value });
+  }
+
 
     render() {
       let ordersForDevices = this.props.agwaFarmDevices, device={orders:[], id: 0};
-      console.log(ordersForDevices)
       for(let i=0;i<ordersForDevices.length;i++){
-        if(ordersForDevices[i].id==this.state.choosenDevice){
+        if(ordersForDevices[i].id==this.state.selectedDevice){
           device = ordersForDevices[i];
         }
     }
@@ -73,7 +86,9 @@ class WishListModal extends Component{
                                           <Image   source={{uri: `https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/images/vegetables/${ele.imageId}@3x.jpg`}}
                                               style={{ width: 90, height: 100, resizeMode: 'contain' }}/>
                                           </View>
+                                          <Text style={{color: "white", marginLeft:4}}>{ele.quantity}</Text>
                                           <Text style={styles.wishlistItem}>{ele.name}</Text>
+                                          
                                           <TouchableOpacity onPress={ () => this.removeItem(ele.id)}>
                                             <View>
                                               <FontAwesome name="trash-o" color="#fff" style={{ marginRight: 10 }} size={25}/>
@@ -82,6 +97,27 @@ class WishListModal extends Component{
                                         </View>)
                                 }
                             </View>
+                            <View style={{ flex: 0.7, fontSize: 14 }}>
+                                            <Text>Please Choose Device Type</Text>
+                                            <Picker
+                                                itemStyle={styles.itemStyle}
+                                                mode="dropdown"
+                                                style={styles.pickerItem}
+                                                placeholder='Device Type..'
+                                                selectedValue={this.state.selectedDevice}
+                                                onValueChange={this.onDeviceValueChange.bind(this)}
+                                            >
+                                                {this.state.agwaFarmDevices.map((item, index) => (
+                                                    <Picker.Item
+                                                        color="#0087F0"
+                                                        label={item}
+                                                        value={item}
+                                                        index={index}
+                                                        key={index}
+                                                    />
+                                                ))}
+                                            </Picker>
+                                        </View>
                         </ScrollView>
                        
                     </View>
@@ -150,6 +186,11 @@ const styles = StyleSheet.create({
       fontSize: 16,
       flex: 2,
       marginLeft: 10
+    },
+    pickerItem: {
+      color: '#fff',
+      fontSize: 16,
+      flex: 2,
     },
     emptyWishlistContainer: {
       borderWidth: 1,

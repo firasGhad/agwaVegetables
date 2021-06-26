@@ -13,7 +13,9 @@ class VegetableDetails extends Component {
         isVisible: false,
         isPlantInWishList: false,
         plant: {},
-        selectedDevice: 0
+        selectedDevice: 1,
+        agwaFarmDevices: [],
+        quantity: 1
     }
 
     constructor(props) {
@@ -21,14 +23,18 @@ class VegetableDetails extends Component {
     }
 
     componentDidMount() {
+        let agwaFarmDevices =this.props.agwaFarmDevices.map((item) => item.id)
+
+        this.setState({agwaFarmDevices});
+        
         this.loadData();
     }
 
     addPlant = () => {
-        if (this.isPlantInWishlist(this.state.plant, 1)) {
+        if (this.isPlantInWishlist(this.state.plant, this.state.selectedDevice)) {
             return;
         }
-        this.props.add(this.state.plant, 1);
+        this.props.add({...this.state.plant, quantity: this.state.quantity}, this.state.selectedDevice);
         setTimeout(() => {
             this.loadData();
         }, 500);
@@ -37,7 +43,7 @@ class VegetableDetails extends Component {
 
     removePlant = () => {
         if (this.props.agwaFarmDevices[this.state.selectedDevice].orders !== null && this.props.agwaFarmDevices[this.state.selectedDevice].orders.length > 0) {
-            this.props.delete(this.state.plant.id, 1);
+            this.props.delete(this.state.plant.id, this.state.selectedDevice);
             setTimeout(() => {
                 this.loadData();
             }, 500);
@@ -46,31 +52,18 @@ class VegetableDetails extends Component {
 
     loadData = () => {
         let plant = this.state.plant.id === undefined ? (this.props.route.params.plant || {}) : this.state.plant;
-        let isPlantInWishlist = this.isPlantInWishlist(plant, 1);
+        let isPlantInWishlist = this.isPlantInWishlist(plant, this.state.selectedDevice);
         this.setState({ isPlantInWishlist, plant });
     }
 
     isPlantInWishlist = (plant, deviceId) => {
-
         let { agwaFarmDevices } = this.props;
-
         for (let i = 0; i < agwaFarmDevices.length; i++) {
             if (agwaFarmDevices[i].id == deviceId) {
                 let orders = agwaFarmDevices[i].orders.filter(order => order.id == plant.id);
                 return orders.length > 0;
             }
         }
-        // if(agwaFarmDevices !== null){
-        //     for(let i=0;i<agwaFarmDevices[deviceId].orders.length;i++){
-        //         console.log('helllll')
-
-        //         if(agwaFarmDevices[i].id==deviceId){
-        //             console.log('not found')
-        //            return !!ordersForDevices[i].orders.filter(order => order.plant.id == plant.id);
-
-        //         }
-        //     }
-        // }
         return false;
     }
 
@@ -86,10 +79,14 @@ class VegetableDetails extends Component {
         this.setState({ selectedDevice: value });
     }
 
-    render() {
+    onVegtableQuantityChange(value) {
+        this.setState({ quantity: value });
+    }
 
+    render() {
         return (
             <SafeAreaView style={styles.container}>
+                <ScrollView>
                 <LinearGradient colors={['#F2f2f2', '#699dd7', '#6294cf', '#405596', '#4252a0']}>
 
                     <WishListModal isVisible={this.state.isVisible} closeModal={this.closeModal.bind(this)} loadData={this.loadData.bind(this)} />
@@ -109,12 +106,6 @@ class VegetableDetails extends Component {
                                 <View style={{ flexDirection: 'row' }}>
                                     <Image source={require('../assets/images/wishlist_white.png')}
                                         style={{ width: 80, height: 80 }} />
-
-                                    {/* {
-                                            (this.props.agwaFarmDevices[this.state.choosenDevice].orders !== null && this.props.agwaFarmDevices[this.state.choosenDevice].orders.length > 0) ? 
-                                            <Text style={styles.wishlistCounterText}>{this.props.agwaFarmDevices[this.state.choosenDevice].orders.length}</Text>
-                                            : null 
-                                        }     */}
                                 </View>
                             </TouchableOpacity>
                         </View>
@@ -139,12 +130,9 @@ class VegetableDetails extends Component {
                                                 <Icon name="heart" size={20} color={'#FFF'} />
                                             </View>
                                         </TouchableOpacity>
-
-                                       
                                     </View>
                                     :
                                     <View>
-
                                         <TouchableOpacity style={styles.addRemoveMovieButton} onPress={this.addPlant}>
                                             <View style={styles.buttonContainer}>
                                                 <Text style={styles.buttonText}>Add to Wish List</Text>
@@ -152,26 +140,44 @@ class VegetableDetails extends Component {
                                             </View>
                                         </TouchableOpacity>
                                         <View style={{ flex: 0.7, fontSize: 14 }}>
-                                            <Text>Please Choose Device Type</Text>
-                                            {/* <Picker
+                                        <Text>Please Choose Vegetable Quantity</Text>
+                                            <Picker
                                                 itemStyle={styles.itemStyle}
                                                 mode="dropdown"
-                                                style={styles.pickerStyle}
+                                                style={styles.pickerItem}
+                                                placeholder='Device Type..'
+                                                selectedValue={this.state.quantity}
+                                                onValueChange={this.onVegtableQuantityChange.bind(this)}
+                                            >
+                                                {['1','2','3'].map((item, index) => (
+                                                    <Picker.Item
+                                                        color="#0087F0"
+                                                        label={item}
+                                                        value={item}
+                                                        index={index}
+                                                        key={index}
+                                                    />
+                                                ))}
+                                            </Picker>
+                                            <Text>Please Choose Device Type</Text>
+                                            <Picker
+                                                itemStyle={styles.itemStyle}
+                                                mode="dropdown"
+                                                style={styles.pickerItem}
                                                 placeholder='Device Type..'
                                                 selectedValue={this.state.selectedDevice}
                                                 onValueChange={this.onDeviceValueChange.bind(this)}
                                             >
-                                                {this.props.agwaFarmDevices.map((item, index) => (
+                                                {this.state.agwaFarmDevices.map((item, index) => (
                                                     <Picker.Item
                                                         color="#0087F0"
-                                                        label={item.id}
-                                                        value={item.id}
+                                                        label={item}
+                                                        value={item}
                                                         index={index}
                                                         key={index}
-
                                                     />
                                                 ))}
-                                            </Picker> */}
+                                            </Picker>
                                         </View>
                                     </View>
 
@@ -180,6 +186,7 @@ class VegetableDetails extends Component {
 
                     </View>
                 </LinearGradient>
+                </ScrollView>
             </SafeAreaView>
         );
     }
@@ -221,6 +228,12 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: 'bold'
     },
+    pickerItem: {
+      color: '#fff',
+      fontSize: 16,
+      flex: 2,
+    },
+    
     wishlistCounterText: {
         fontSize: 15,
         backgroundColor: '#fff',

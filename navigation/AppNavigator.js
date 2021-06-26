@@ -14,10 +14,10 @@ export default class AppNavigation extends Component {
     return (
       <NavigationContainer>
         <Stack.Navigator headerMode="none">
-          <Stack.Screen name="VegetablesCategory" component={VegetablesCategory} />
+        <Stack.Screen name="VegetablesCategories" component={VegetablesCategories} />
           <Stack.Screen name="Welcome" component={Welcome} />
           <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="VegetablesCategories" component={VegetablesCategories} />
+          <Stack.Screen name="VegetablesCategory" component={VegetablesCategory} />
           <Stack.Screen name="VegetableDetails" component={VegetableDetails} />
         </Stack.Navigator>
       </NavigationContainer>

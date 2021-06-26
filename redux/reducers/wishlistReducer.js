@@ -3,11 +3,11 @@ import {ADD_TO_WISHLIST, REMOVE_FROM_WISHLIST, EMPTY_WISHLIST} from '../actions/
 const initialState = {
     agwaFarmDevices: [
         {
-            id: 1,
+            id: '1',
             orders: []
         },
         {
-            id: 2,
+            id: '2',
             orders: []
         }
     ]
@@ -16,12 +16,17 @@ const initialState = {
 const wishlistReducer = (state = initialState, action) => {
     switch (action.type){
         case ADD_TO_WISHLIST: 
-         let ordersForDevices = state.agwaFarmDevices;
+         let ordersForDevices = state.agwaFarmDevices, isFound=false;
          for(let i=0;i<ordersForDevices.length;i++){
              if(ordersForDevices[i].id==action.deviceId){
-                ordersForDevices[i].orders.push(action.plant);
-               
-
+                for(let j=0;j<ordersForDevices[i].orders.length;j++){
+                    if(ordersForDevices[i].orders[j].id==action.plant.id){
+                        ordersForDevices[i].orders[j].quantity+=action.plant.quantity;
+                        isFound = true;
+                        break;
+                    }
+                }
+                !isFound && ordersForDevices[i].orders.push(action.plant);
              }
          }
         
@@ -34,24 +39,9 @@ const wishlistReducer = (state = initialState, action) => {
             for(let i=0;i<ordersForDevices.length;i++){
                
                 if(ordersForDevices[i].id==action.deviceId){
-                    // console.log(ordersForDevices[i].orders, 'fuck')
-
-                    ordersForDevices[i].orders = ordersForDevices[i].orders.filter( (item) => {
-                       console.log('item',item);
-                       console.log('///////////////////////////action',action);
-                      if(item.id === action.id){
-                          console.log('daaaaaaaaaam');
-                      }
-                    return item.id !== action.id
-
-                   }
-                   );
-                //    console.log( ordersForDevices[i].orders, 'deleted');
+                    ordersForDevices[i].orders = ordersForDevices[i].orders.filter((item) => item.id !== action.id);
                 }
             }
-            console.log('--------------------------', {...state, 
-                agwaFarmDevices: ordersForDevices
-                });
             return {
                 ...state,
                 agwaFarmDevices: ordersForDevices
