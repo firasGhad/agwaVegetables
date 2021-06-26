@@ -9,80 +9,51 @@ export default class VegetablesCategoryComponent extends Component{
 
     componentDidMount(){
         this.carRef = null;
-        this.getCategory();
+        this.getPlants();
+        this.loadData();
+        setTimeout(()=>this.filterByCategory(),250); 
     }
 
+    
     state = {
-        plants: ['aaa']
+        plants: [],
+        plantsByCategory:[]
     };
 
-    getCategory = async () => {
-
+    getPlants = async () => {
         let url = 'https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/data/catalogs/plants.json';
-
         try{
             let res = await fetch(url);
             let response = await res.json();
             let {plants} = response;
-            // console.log('resppppppp', plants)
-            // for(let i=0; i< categories.length; i++){
-            //     try{
-            //             // categories[i]=JSON.parse(categories[i]);
-            //             console.log('fuck', categories[i].name)
-            //             categories[i]=categories[i].name;
-            //     }catch(err){
-            //         console.log(err)
-            //     }
-            // }
             this.setState({ plants });
-
         }catch(e){
             console.log(e);
         }
 
     }
 
-    // render(){
-    //     return (
-    //         <View>
-    //         <ScrollView>    
-    //         {
-    //             this.state.plants ?
-    //             this.state.plants.map((plant, i) => {
-    //                 return (
-    //                     <View>    
-    //                          <Text>{plant.name}</Text>
-    //                     <Image
-    //                               source={{uri: `https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/images/vegetables/${plant.imageId}@3x.jpg`}}
-    //                                 style={{width: 250, height: 250}}
-    //                             />   
-    //                 </View>
-    //                                     // <Cards
-    //                     //     navigation={this.props.navigation}
-    //                     //     key={i}
-    //                     //     order_id={o.id}
-    //                     //     start_point={o.start_point}
-    //                     //     destination={o.destination}
-    //                     //     customerFirstName={o.customerFirstName}
-    //                     //     customerLastName={o.customerLastName}
-    //                     //     customerPhone={o.customerPhone}
-    //                     //     customerEmail={o.customerEmail}
-    //                     //     serial_number={o.serial_number}
-    //                     // >
-    //                     // </Cards>
-    //                 )
-    //             })
-    //        :    <Text>Loading</Text>
-    //     } 
-    //     </ScrollView>
-    //     </View>
-    //     );
-    // }
-    render(){
+    loadData = () => {
+        let plantsByCategory = this.state.plants.length == 0 ? (this.props.route.params.plants || []) : this.state.plantsByCategory;
+        this.setState({ plantsByCategory });
+    }
 
+    filterByCategory = () => {
+        let {plants, plantsByCategory}= this.state, relevantPlants=[];
+        for(let i=0; i<plants.length;i++){
+          for(let j=0;j<plantsByCategory.length;j++){
+            if(plants[i].id == plantsByCategory[j].id){
+                relevantPlants.push(plants[i]);
+            }
+          }
+        }
+        this.setState({plants: relevantPlants})
+    }
+
+    
+    render(){
         return (
             <View style={styles.loginUserLayout}>
-
                 {
                     this.state.plants.length === 0 ? null :
                     <Animatable.View animation="fadeInLeft" style={styles.flatListContainer}>
@@ -99,7 +70,6 @@ export default class VegetablesCategoryComponent extends Component{
                             renderItem={ (val, ind) => {
                                 return <VegetableItem plant={val.item} navigation={this.props.navigation}/>
                             }}/>
-        
                     </Animatable.View>
                 }
             </View>
@@ -115,10 +85,6 @@ const styles = StyleSheet.create({
         alignItems: 'center'
     },
     buttonMovies: {
-        // backgroundColor: '#00A86B',
-        // paddingHorizontal: 15,
-        // paddingVertical: 10,
-        // borderRadius: 10     
         borderWidth: 1,
         borderColor: 'white',                                    
         paddingHorizontal: 35,

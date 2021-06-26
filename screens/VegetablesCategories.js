@@ -3,6 +3,9 @@ import { View, ScrollView,TouchableOpacity, Text, StyleSheet, Dimensions, FlatLi
 // import VegetableItem from './VegetableItem';
 import * as Animatable from 'react-native-animatable';
 
+
+import { NavigateTo } from '../constants/GeneralMethods';
+
 const {width, height} = Dimensions.get("window");
 
 export default class VegetablesCategoriesComponent extends Component{
@@ -42,35 +45,27 @@ export default class VegetablesCategoriesComponent extends Component{
 
     }
 
+    openVegetablesCategory = (plants) => {
+        NavigateTo(this.props.navigation, 'VegetablesCategory', {plants});
+     }
+
     render(){
         return (
             <View>
-            <ScrollView>    
-            {
-                this.state.categories ?
-                this.state.categories.map((o, i) => {
-                    console.log('teeest')
-                    return (
-                        <Text>{o.name} </Text>
-                        // <Cards
-                        //     navigation={this.props.navigation}
-                        //     key={i}
-                        //     order_id={o.id}
-                        //     start_point={o.start_point}
-                        //     destination={o.destination}
-                        //     customerFirstName={o.customerFirstName}
-                        //     customerLastName={o.customerLastName}
-                        //     customerPhone={o.customerPhone}
-                        //     customerEmail={o.customerEmail}
-                        //     serial_number={o.serial_number}
-                        // >
-                        // </Cards>
-                    )
-                })
-           :    <Text>tttttt</Text>
-        } 
-        </ScrollView>
-        </View>
+                {
+                    this.state.categories ?
+                        <View style={styles.container}>
+                            <FlatList
+                                style={styles.flatListContainer}
+                                data={this.state.categories}
+                                renderItem={({item}) => <TouchableOpacity onPress={()=>this.openVegetablesCategory(item.plants)}>
+                                    <Text style={styles.listItem}>{item.name}</Text>
+                                </TouchableOpacity>}
+                            />
+                        </View>
+                        : <Text>Loading</Text>
+                }
+            </View>
         );
     }
 }
@@ -82,20 +77,24 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center'
     },
-    buttonMovies: {
-        // backgroundColor: '#00A86B',
-        // paddingHorizontal: 15,
-        // paddingVertical: 10,
-        // borderRadius: 10     
+    listItem: {
+        fontSize: 28,
+        backgroundColor: '#4252a0',
+        fontWeight: 'bold',
+        marginVertical: 25,
+        textAlign: 'center',
+        color: '#f2f2f2',
+        paddingHorizontal: 35,
+        paddingVertical: 15,
+        borderRadius: 50
+        ,elevation: 5,
+        padding: 10,  
+        fontSize: 18,  
         borderWidth: 1,
         borderColor: 'white',                                    
         paddingHorizontal: 35,
         paddingVertical: 15,
         borderRadius: 50
-    },
-    textMovies: {
-        color: '#fff',
-        fontSize: 18
     },
     flatListContainer: {
         marginTop: 20,
@@ -104,6 +103,6 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.5,
         shadowOffset: {width: 0.2, height: 0.2},
         shadowRadius: 10,
-        elevation: 5
+       
     }
 });
