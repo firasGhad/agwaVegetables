@@ -18,7 +18,6 @@ export default class VegetableItem extends Component{
         let {plant} = this.props;
         return (
             <TouchableOpacity onPress={this.openVegetableDetails}>
-
                 <View style={styles.cardView}>
                     <Image   source={{uri: `https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/images/vegetables/${plant.imageId}@3x.jpg`}}
                         style={styles.cardImage}/>

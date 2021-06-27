@@ -8,7 +8,6 @@
  import {name as appName} from './app.json';
  import {Provider} from 'react-redux';
  import {configureStore, persistor} from './redux/store';
-// Add
 import { PersistGate } from 'redux-persist/integration/react';
 
  const store = configureStore();

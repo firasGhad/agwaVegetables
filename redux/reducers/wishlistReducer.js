@@ -21,7 +21,8 @@ const wishlistReducer = (state = initialState, action) => {
              if(ordersForDevices[i].id==action.deviceId){
                 for(let j=0;j<ordersForDevices[i].orders.length;j++){
                     if(ordersForDevices[i].orders[j].id==action.plant.id){
-                        ordersForDevices[i].orders[j].quantity+=action.plant.quantity;
+                        ordersForDevices[i].orders[j].quantity=parseInt(ordersForDevices[i].orders[j].quantity, 10)+parseInt(action.plant.quantity, 10);
+                       // ordersForDevices[i].orders[j].quantity+=action.plant.quantity;
                         isFound = true;
                         break;
                     }

@@ -3,12 +3,15 @@ import { View,Image, ScrollView,TouchableOpacity, Text, StyleSheet, Dimensions, 
 import VegetableItem from '../components/VegetableItem';
 import * as Animatable from 'react-native-animatable';
 
-const {width, height} = Dimensions.get("window");
 
-export default class VegetablesCategoryComponent extends Component{
+import {connect} from 'react-redux';
+import {saveScreen} from '../redux/actions/navigator';
+
+class VegetablesCategoryComponent extends Component{
 
     componentDidMount(){
         this.carRef = null;
+        this.props.saveScreen('VegetablesCategory');
         this.getPlants();
         this.loadData();
         setTimeout(()=>this.filterByCategory(),250); 
@@ -105,3 +108,19 @@ const styles = StyleSheet.create({
         elevation: 5
     }
 });
+
+const mapStateToProps = (state) => {
+    return {
+      screen: state.navigatorReducer.lastPage
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    saveScreen: (screen) => {
+        console.log('sccreeeeee', screen)
+        dispatch(saveScreen(screen))
+    }
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(VegetablesCategoryComponent);

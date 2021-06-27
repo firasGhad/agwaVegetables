@@ -31,9 +31,10 @@ class VegetableDetails extends Component {
     }
 
     addPlant = () => {
-        if (this.isPlantInWishlist(this.state.plant, this.state.selectedDevice)) {
-            return;
-        }
+        // if (this.isPlantInWishlist(this.state.plant, this.state.selectedDevice)) {
+        //     return;
+        // }
+        console.log('this.state.quantity',this.state.quantity)
         this.props.add({...this.state.plant, quantity: this.state.quantity}, this.state.selectedDevice);
         setTimeout(() => {
             this.loadData();

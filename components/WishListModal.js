@@ -3,10 +3,10 @@ import { StyleSheet, View, ScrollView, Text, TouchableOpacity, Image } from 'rea
 import Modal from 'react-native-modal';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
-import {connect} from 'react-redux';
 import LinearGradient from 'react-native-linear-gradient';
 import { Picker } from '@react-native-community/picker';
 
+import {connect} from 'react-redux';
 import {add, remove, empty} from '../redux/actions/wishlist';
 
 class WishListModal extends Component{
