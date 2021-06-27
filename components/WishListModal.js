@@ -17,8 +17,9 @@ class WishListModal extends Component{
 
     
     state = {
-      selectedDevice: 1,
-      agwaFarmDevices: []
+      selectedDeviceId: 1,
+      agwaFarmDevices: [],
+      selectedDevice: { orders: [], id: 0 }
   }
 
     componentDidMount() {
@@ -28,12 +29,12 @@ class WishListModal extends Component{
 
 
     removeItem = (id) => {
-      this.props.delete(id,this.state.selectedDevice);
+      this.props.delete(id,this.state.selectedDeviceId);
       this.loadData();
     }
 
     emptyWishList = () => {
-      this.props.empty(this.state.selectedDevice);
+      this.props.empty(this.state.selectedDeviceId);
       this.loadData();
     }
 
@@ -44,42 +45,43 @@ class WishListModal extends Component{
     }
 
     onDeviceValueChange(value) {
-      this.setState({ selectedDevice: value });
+      this.setState({ selectedDeviceId: value });
+      this.getSelectedDevice()
+  }
+
+  getSelectedDevice() {
+    let ordersForDevices = this.props.agwaFarmDevices, device = { orders: [], id: 0 };
+    for (let i = 0; i < ordersForDevices.length; i++) {
+      if (ordersForDevices[i].id == this.state.selectedDeviceId) {
+        device = ordersForDevices[i];
+      }
+    }
+    this.setState({ selectedDevice: device });
   }
 
 
     render() {
-      let ordersForDevices = this.props.agwaFarmDevices, device={orders:[], id: 0};
-      for(let i=0;i<ordersForDevices.length;i++){
-        if(ordersForDevices[i].id==this.state.selectedDevice){
-          device = ordersForDevices[i];
-        }
-    }
-        let minHeight = (device.orders === null || device.orders.length === 0) ? 200 : 400;
+        let minHeight = (this.state.selectedDevice.orders === null || this.state.selectedDevice.orders.length === 0) ? 200 : 400;
 
         return (
              <View style={styles.container}>
                  <Modal isVisible={this.props.isVisible} style={styles.bottomModal}>
                     <LinearGradient colors={['#699dd7', '#6294cf', '#405596', '#4252a0']}>
                     <View style={[styles.modalContent, {minHeight}]}>
-                        
                         <TouchableOpacity onPress={ () => this.props.closeModal()}
                           style={styles.closeContainer}>
-                            
                             <View style={styles.btnClose}>
                               <Icon name="close" color="#333" size={20}/>
                             </View>
                         </TouchableOpacity>
-
                         <Text style={styles.title}>Wishlist</Text>
-                        
                         <ScrollView style={{ flex: 1 }}>
                             <View style={{ flex: 1 }}>
                                 {
-                                    (device.orders === null || device.orders.length === 0) ?
+                                    (this.state.selectedDevice.orders === null || this.state.selectedDevice.orders.length === 0) ?
                                     <Text style={styles.emptyWishlist}>Your wishlist is empty</Text>
                                     :
-                                    device.orders.map((ele, ind) =>
+                                    this.state.selectedDevice.orders.map((ele, ind) =>
                                         <View key={ind} style={styles.wishlistContainer}>
                                           <View style={{  }}>
 
@@ -104,7 +106,7 @@ class WishListModal extends Component{
                                                 mode="dropdown"
                                                 style={styles.pickerItem}
                                                 placeholder='Device Type..'
-                                                selectedValue={this.state.selectedDevice}
+                                                selectedValue={this.state.selectedDeviceId}
                                                 onValueChange={this.onDeviceValueChange.bind(this)}
                                             >
                                                 {this.state.agwaFarmDevices.map((item, index) => (
@@ -119,20 +121,16 @@ class WishListModal extends Component{
                                             </Picker>
                                         </View>
                         </ScrollView>
-                       
                     </View>
-
-                    {(device.orders === null) ? null : 
+                    {(this.state.selectedDevice.orders === null) ? null : 
                       <TouchableOpacity onPress={this.emptyWishList} activeOpacity={1}>
                         <View style={styles.emptyWishlistContainer}>
                           <Text style={styles.emptyWishlistText}>Empty your wishlist</Text>
                         </View>
                       </TouchableOpacity>
                     }
-
                   </LinearGradient>
                 </Modal>
-                
              </View>
         );
     }
@@ -140,9 +138,6 @@ class WishListModal extends Component{
 }
 
 const styles = StyleSheet.create({
-    container: {
-        
-    },
     btnClose: {
       backgroundColor: '#fff',
       borderRadius: 25,

@@ -11,7 +11,7 @@ class VegetablesCategoryComponent extends Component{
 
     componentDidMount(){
         this.carRef = null;
-        this.props.saveScreen('VegetablesCategory');
+        this.props.saveScreen('VegetablesCategory', this.props.route.params);
         this.getPlants();
         this.loadData();
         setTimeout(()=>this.filterByCategory(),250); 
@@ -36,7 +36,7 @@ class VegetablesCategoryComponent extends Component{
     }
 
     loadData = () => {
-        let plantsByCategory = this.state.plants.length == 0 ? (this.props.route.params.plants || []) : this.state.plantsByCategory;
+        let plantsByCategory = this.state.plants.length == 0 ? (this.props.route.params && this.props.route.params.plants || []) : this.state.plantsByCategory;
         this.setState({ plantsByCategory });
     }
 
@@ -55,7 +55,7 @@ class VegetablesCategoryComponent extends Component{
     
     render(){
         return (
-            <View style={styles.loginUserLayout}>
+            <View style={styles.Layout}>
                 {
                     this.state.plants.length === 0 ? null :
                     <Animatable.View animation="fadeInLeft" style={styles.flatListContainer}>
@@ -81,21 +81,10 @@ class VegetablesCategoryComponent extends Component{
 
 
 const styles = StyleSheet.create({
-    loginUserLayout:{
+    Layout:{
         flex: 2,
         justifyContent: 'center',
         alignItems: 'center'
-    },
-    buttonMovies: {
-        borderWidth: 1,
-        borderColor: 'white',                                    
-        paddingHorizontal: 35,
-        paddingVertical: 15,
-        borderRadius: 50
-    },
-    textMovies: {
-        color: '#fff',
-        fontSize: 18
     },
     flatListContainer: {
         marginTop: 20,
@@ -110,15 +99,15 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = (state) => {
     return {
-      screen: state.navigatorReducer.lastPage
+      screen: state.navigatorReducer.lastPage,
+      plantsParams: state.navigatorReducer.plantsParams
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch, data) => {
   return {
     saveScreen: (screen) => {
-        console.log('sccreeeeee', screen)
-        dispatch(saveScreen(screen))
+        dispatch(saveScreen(screen, data.route.params))
     }
   }
 }

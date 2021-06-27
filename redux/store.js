@@ -1,7 +1,6 @@
 import {createStore, combineReducers} from 'redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { persistStore, persistReducer , persistCombineReducers} from 'redux-persist';
-import { PersistGate } from 'redux-persist/lib/integration/react';
 
 import wishlistReducer from './reducers/wishlistReducer';
 import navigatorReducer from './reducers/navigatorReducer';
@@ -12,17 +11,14 @@ const persistConfig = {
     whitelist: ['navigatorReducer', 'wishlistReducer']
   };
 
-// const rootReducer = combineReducers({
-//     wishlistReducer: wishlistReducer
-// });
+const rootReducer = combineReducers({
+  wishlistReducer,
+  navigatorReducer
+});
 
-// const rootReducer = combineReducers({
-//     wishlistReducer: persistReducer(persistConfig, wishlistReducer),
-//     navigatorReducer: persistReducer(persistConfig, navigatorReducer)
-//   });
+const persistenedReducer = persistReducer(persistConfig, rootReducer);
 
-  const rootReducer = persistCombineReducers(persistConfig , {wishlistReducer, navigatorReducer})
+const store = createStore(persistenedReducer);
+const persistor = persistStore(store);
 
-export const configureStore = () => createStore(rootReducer);
-export const persistor = persistStore(configureStore());
-
+export default {store, persistor};

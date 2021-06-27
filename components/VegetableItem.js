@@ -4,6 +4,9 @@ import { NavigateTo } from '../constants/GeneralMethods';
 
 const {width, height} = Dimensions.get('window');
 
+import {connect} from 'react-redux';
+import {saveScreen} from '../redux/actions/navigator';
+
 export default class VegetableItem extends Component{
 
     openVegetableDetails = () => {
@@ -64,3 +67,5 @@ const styles = StyleSheet.create({
         elevation: 5
     }
 });
+
+

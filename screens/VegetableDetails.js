@@ -46,8 +46,7 @@ class VegetableDetails extends Component {
     }
 
     loadData = () => {
-        let plant = this.state.plant.id === undefined ? (this.props.route.params.plant || {}) : this.state.plant;
-        console.log('ppppppppp',plant)
+        let plant = this.state.plant.id === undefined ? (this.props.route.params && this.props.route.params.plant || {}) : this.state.plant;
         let isPlantInWishlist = this.isPlantInWishlist(plant, this.state.selectedDevice);
         this.setState({ isPlantInWishlist, plant });
     }
@@ -108,7 +107,7 @@ class VegetableDetails extends Component {
 
 
 
-                    <View style={styles.movieContainer}>
+                    <View style={styles.plantContainer}>
                         <Image source={{ uri: `https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/images/vegetables/${this.state.plant.imageId}@3x.jpg` }}
                             style={styles.mainImage} />
                         <Text style={styles.title}>{this.state.plant.name}</Text>
@@ -119,7 +118,7 @@ class VegetableDetails extends Component {
                             {
                                 this.state.isPlantInWishList ?
                                     <View>
-                                        <TouchableOpacity style={styles.addRemoveMovieButton} onPress={this.removePlant}>
+                                        <TouchableOpacity style={styles.addRemovePlantButton} onPress={this.removePlant}>
                                             <View style={styles.buttonContainer}>
                                                 <Text style={styles.buttonText}>Remove from Wish List</Text>
                                                 <Icon name="heart" size={20} color={'#FFF'} />
@@ -128,7 +127,7 @@ class VegetableDetails extends Component {
                                     </View>
                                     :
                                     <View>
-                                        <TouchableOpacity style={styles.addRemoveMovieButton} onPress={this.addPlant}>
+                                        <TouchableOpacity style={styles.addRemovePlantButton} onPress={this.addPlant}>
                                             <View style={styles.buttonContainer}>
                                                 <Text style={styles.buttonText}>Add to Wish List</Text>
                                                 <Icon name="heart-o" size={20} color={'#FFF'} />
@@ -175,10 +174,8 @@ class VegetableDetails extends Component {
                                             </Picker>
                                         </View>
                                     </View>
-
                             }
                         </View>
-
                     </View>
                 </LinearGradient>
                 </ScrollView>
@@ -242,7 +239,7 @@ const styles = StyleSheet.create({
         top: 10,
         left: 10
     },
-    movieContainer: {
+    plantContainer: {
         marginHorizontal: 20,
         justifyContent: 'center',
         alignItems: 'center'
@@ -278,7 +275,7 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: 'white'
     },
-    addRemoveMovieButton: {
+    addRemovePlantButton: {
         borderWidth: 1,
         borderColor: 'white',
         paddingHorizontal: 15,

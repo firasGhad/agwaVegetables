@@ -5,14 +5,15 @@ import * as Animatable from 'react-native-animatable';
 
 
 import { NavigateTo } from '../constants/GeneralMethods';
+import {connect} from 'react-redux';
+import {saveScreen} from '../redux/actions/navigator';
 
-const {width, height} = Dimensions.get("window");
-
-export default class VegetablesCategoriesComponent extends Component{
+class VegetablesCategoriesComponent extends Component{
 
     componentDidMount(){
-        this.carRef = null;
         this.getCategories();
+        this.props.saveScreen('VegetablesCategories');
+
     }
 
     state = {
@@ -20,25 +21,12 @@ export default class VegetablesCategoriesComponent extends Component{
     };
 
     getCategories = async () => {
-
         let url = 'https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/data/catalogs/agwafarm.json';
-
         try{
             let res = await fetch(url);
             let response = await res.json();
             let {categories} = response;
-            console.log('resppppppp', categories)
-            // for(let i=0; i< categories.length; i++){
-            //     try{
-            //             // categories[i]=JSON.parse(categories[i]);
-            //             console.log('fuck', categories[i].name)
-            //             categories[i]=categories[i].name;
-            //     }catch(err){
-            //         console.log(err)
-            //     }
-            // }
             this.setState({ categories });
-
         }catch(e){
             console.log(e);
         }
@@ -46,6 +34,8 @@ export default class VegetablesCategoriesComponent extends Component{
     }
 
     openVegetablesCategory = (plants) => {
+        console.log('{plants}',{plants})
+
         NavigateTo(this.props.navigation, 'VegetablesCategory', {plants});
      }
 
@@ -72,11 +62,6 @@ export default class VegetablesCategoriesComponent extends Component{
 
 
 const styles = StyleSheet.create({
-    loginUserLayout:{
-        flex: 2,
-        justifyContent: 'center',
-        alignItems: 'center'
-    },
     listItem: {
         fontSize: 28,
         backgroundColor: '#4252a0',
@@ -102,7 +87,21 @@ const styles = StyleSheet.create({
         shadowColor: '#000',
         shadowOpacity: 0.5,
         shadowOffset: {width: 0.2, height: 0.2},
-        shadowRadius: 10,
-       
+        shadowRadius: 10, 
     }
 });
+
+const mapStateToProps = (state) => {
+    return {
+      screen: state.navigatorReducer.lastPage,
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    saveScreen: (screen) => {
+        dispatch(saveScreen(screen))
+    }
+  }
+}
+export default connect(mapStateToProps, mapDispatchToProps)(VegetablesCategoriesComponent);

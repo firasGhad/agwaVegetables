@@ -8,7 +8,8 @@ const navigatorReducer = (state = initialState, action) => {
     switch (action.type){
         case SAVE_SCREEN: 
          return {
-            lastPage: action.screen
+            lastPage: action.screen,
+            plantsParams: action.plantsParams 
             };
         default:
             return state;    
