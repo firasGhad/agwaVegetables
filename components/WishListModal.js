@@ -46,7 +46,7 @@ class WishListModal extends Component{
 
     onDeviceValueChange(value) {
       this.setState({ selectedDeviceId: value });
-      this.getSelectedDevice()
+      setTimeout(()=>this.getSelectedDevice(), 250);
   }
 
   getSelectedDevice() {
