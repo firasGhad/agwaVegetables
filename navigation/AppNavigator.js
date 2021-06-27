@@ -3,7 +3,6 @@ import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
 import {connect} from 'react-redux';
 
-import Login from '../screens/Login';
 import Welcome from '../screens/Welcome';
 import VegetablesCategories from '../screens/VegetablesCategories';
 import VegetablesCategory from '../screens/VegetablesCategory';
@@ -26,7 +25,6 @@ class AppNavigation extends Component {
         <Stack.Navigator headerMode="none" initialRouteName={initialScreen}>
           <Stack.Screen name="Welcome" component={Welcome} />
           <Stack.Screen name="VegetablesCategories" component={VegetablesCategories} />
-          <Stack.Screen name="Login" component={Login} />
           <Stack.Screen name="VegetablesCategory" component={VegetablesCategory} />
           <Stack.Screen name="VegetableDetails" component={VegetableDetails} />
         </Stack.Navigator>

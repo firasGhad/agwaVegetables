@@ -24,17 +24,11 @@ class VegetableDetails extends Component {
 
     componentDidMount() {
         let agwaFarmDevices =this.props.agwaFarmDevices.map((item) => item.id)
-
         this.setState({agwaFarmDevices});
-        
         this.loadData();
     }
 
     addPlant = () => {
-        // if (this.isPlantInWishlist(this.state.plant, this.state.selectedDevice)) {
-        //     return;
-        // }
-        console.log('this.state.quantity',this.state.quantity)
         this.props.add({...this.state.plant, quantity: this.state.quantity}, this.state.selectedDevice);
         setTimeout(() => {
             this.loadData();
@@ -53,6 +47,7 @@ class VegetableDetails extends Component {
 
     loadData = () => {
         let plant = this.state.plant.id === undefined ? (this.props.route.params.plant || {}) : this.state.plant;
+        console.log('ppppppppp',plant)
         let isPlantInWishlist = this.isPlantInWishlist(plant, this.state.selectedDevice);
         this.setState({ isPlantInWishlist, plant });
     }
@@ -89,7 +84,6 @@ class VegetableDetails extends Component {
             <SafeAreaView style={styles.container}>
                 <ScrollView>
                 <LinearGradient colors={['#F2f2f2', '#699dd7', '#6294cf', '#405596', '#4252a0']}>
-
                     <WishListModal isVisible={this.state.isVisible} closeModal={this.closeModal.bind(this)} loadData={this.loadData.bind(this)} />
                     <View style={styles.customHeader}>
                         <View style={styles.goBackContainer}>
@@ -115,7 +109,7 @@ class VegetableDetails extends Component {
 
 
                     <View style={styles.movieContainer}>
-                        <Image source={{ uri: `https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/images/vegetables/${plant.imageId}@3x.jpg` }}
+                        <Image source={{ uri: `https://dev-agwa-public-static-assets-web.s3-us-west-2.amazonaws.com/images/vegetables/${this.state.plant.imageId}@3x.jpg` }}
                             style={styles.mainImage} />
                         <Text style={styles.title}>{this.state.plant.name}</Text>
                         <ScrollView style={{ maxHeight: 150 }}>

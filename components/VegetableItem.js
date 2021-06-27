@@ -7,14 +7,11 @@ const {width, height} = Dimensions.get('window');
 export default class VegetableItem extends Component{
 
     openVegetableDetails = () => {
-       NavigateTo(this.props.navigation, 'VegetableDetails', {plant} = this.props);
+        const {plant} = this.props
+       NavigateTo(this.props.navigation, 'VegetableDetails', {plant});
     }
 
-  
- 
-
     render(){
-
         let {plant} = this.props;
         return (
             <TouchableOpacity onPress={this.openVegetableDetails}>
